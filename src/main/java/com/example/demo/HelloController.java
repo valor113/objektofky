@@ -16,9 +16,9 @@ public class HelloController {
         s.zmenStav();
     }
     @FXML protected void handleAutomatic() {
-        s.prepni();
+        s.prepniDennu();
     }
     @FXML protected void handleNight() {
-        s.night();
+        s.prepniNocnu();
     }
 }

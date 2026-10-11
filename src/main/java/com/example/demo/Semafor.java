@@ -11,8 +11,10 @@ public class Semafor extends Canvas {
 
     private final GraphicsContext go;
     private int stav = 0;
-    private boolean automatika = false;
-    private Timeline t;
+    private boolean dennaAutomatika = false;
+    private boolean nocnaAutomatika = false;
+    private Timeline tStandart;
+    private Timeline tNight;
 
     public Semafor() {
         super(150,400);
@@ -20,34 +22,69 @@ public class Semafor extends Canvas {
         this.go = this.getGraphicsContext2D();
         vykresli(Color.RED, Color.BLACK, Color.BLACK);
         setOnMouseClicked(e -> zmenStav());
-        t=new Timeline(new KeyFrame(Duration.seconds(1), e -> zmenStav()));
-        t=new Timeline(new KeyFrame(Duration.seconds(1), e -> night()));
-        t.setCycleCount(Timeline.INDEFINITE);
+
+        tStandart = new Timeline(new KeyFrame(Duration.seconds(1), e -> zmenStav()));
+        tStandart.setCycleCount(Timeline.INDEFINITE);
+
+        tNight = new Timeline(new KeyFrame(Duration.seconds(1), e -> night()));
+        tNight.setCycleCount(Timeline.INDEFINITE);
 
     }
 
-    public void prepni() {
-        if(automatika){t.stop();automatika = false;}
-        else { t.play();automatika = true;}
+    public void prepniDennu() {
+        if (nocnaAutomatika) {
+            tNight.stop();
+            nocnaAutomatika = false;
+        }
+
+        if (dennaAutomatika) {
+            tStandart.stop();
+            dennaAutomatika = false;
+        } else {
+            tStandart.play();
+            dennaAutomatika = true;
+        }
+    }
+
+    public void prepniNocnu() {
+        if (dennaAutomatika) {
+            tStandart.stop();
+            dennaAutomatika = false;
+        }
+
+        if (nocnaAutomatika) {
+            tNight.stop();
+            nocnaAutomatika = false;
+        } else {
+            stav = 0; // Nastavíme na začiatok nočného režimu
+            tNight.play();
+            nocnaAutomatika = true;
+        }
     }
 
     public void zmenStav() {
-        if (stav==3) stav=0;
-        else stav++;
         switch(stav){
             case 0: vykresli(Color.RED, Color.BLACK, Color.BLACK); break;
-            case 1: vykresli(Color.RED,Color.ORANGE, Color.BLACK); break;
+            case 1: vykresli(Color.RED, Color.ORANGE, Color.BLACK); break;
             case 2: vykresli(Color.BLACK, Color.BLACK, Color.GREEN); break;
             case 3: vykresli(Color.BLACK, Color.BLACK, Color.BLACK); break;
         }
-
+        if (stav == 3) {
+            stav = 0;
+        } else {
+            stav++;
+        }
     }
+
     public void night() {
-        if (stav==1) stav=0;
-        else stav++;
         switch(stav){
             case 0: vykresli(Color.BLACK, Color.ORANGE, Color.BLACK); break;
-            case 1: vykresli(Color.BLACK,Color.BLACK, Color.BLACK); break;
+            case 1: vykresli(Color.BLACK, Color.BLACK, Color.BLACK); break;
+        }
+        if (stav == 1) {
+            stav = 0;
+        } else {
+            stav++;
         }
     }
 
